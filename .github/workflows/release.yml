@@ -1,0 +1,169 @@
+name: Release
+
+on:
+  push:
+    branches: [ main ] 
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 0.1.4)'
+        required: true
+        type: string
+
+jobs:
+  # Build native libraries for Linux
+  build-linux:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
+    
+    - name: Build Linux native libraries
+      run: |
+        chmod +x scripts/build-linux.sh
+        scripts/build-linux.sh
+    
+    - name: Upload Linux artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: linux-natives
+        path: runtime/linux-x64/
+        retention-days: 1
+  
+  # Build native libraries for Windows
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
+    
+    - name: Build Windows native libraries
+      run: |
+        pwsh scripts/build-windows.ps1
+    
+    - name: Upload Windows artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-natives
+        path: runtime/windows-x64/
+        retention-days: 1
+  
+  # Build native libraries for macOS (both dylib and XCFramework)
+  build-macos:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
+    
+    - name: Install nightly toolchain for iOS targets
+      run: rustup toolchain install nightly
+    
+    - name: Build macOS dylib
+      run: |
+        chmod +x scripts/build-macos.sh
+        scripts/build-macos.sh
+    
+    - name: Build XCFramework
+      run: |
+        chmod +x scripts/build-xcframework.sh
+        scripts/build-xcframework.sh
+    
+    - name: Upload macOS dylib artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-natives
+        path: runtime/macos/
+        retention-days: 1
+    
+    - name: Upload XCFramework artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: xcframework-natives
+        path: runtime/Frameworks/
+        retention-days: 1
+  
+  # Build native libraries for Android
+  build-android:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
+    
+    - name: Setup Android NDK
+      uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r26c
+        add-to-path: false
+    
+    - name: Install cargo-ndk
+      run: cargo install cargo-ndk
+    
+    - name: Build Android native libraries
+      run: |
+        chmod +x scripts/build-android.sh
+        scripts/build-android.sh
+      env:
+        ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
+    
+    - name: Upload Android artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-natives
+        path: |
+          runtime/android-x86_64/
+          runtime/android-arm64-v8a/
+        retention-days: 1
+  
+  # Build native libraries for WASM
+  build-wasm:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
+    
+    - name: Build WASM native libraries
+      run: |
+        chmod +x scripts/build-wasm.sh
+        scripts/build-wasm.sh
+    
+    - name: Upload WASM artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: wasm-natives
+        path: runtime/browser-wasm/
+        retention-days: 1
