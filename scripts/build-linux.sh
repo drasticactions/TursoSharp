@@ -22,9 +22,9 @@ cargo clean
 # Define Linux targets
 TARGETS=(
     "x86_64-unknown-linux-gnu"
-    "x86_64-unknown-linux-musl"
-    "aarch64-unknown-linux-gnu"
-    "aarch64-unknown-linux-musl"
+    # "x86_64-unknown-linux-musl"
+    # "aarch64-unknown-linux-gnu"
+    # "aarch64-unknown-linux-musl"
 )
 
 # Install all required targets
@@ -42,7 +42,7 @@ for target in "${TARGETS[@]}"; do
 done
 
 # Create Linux runtime directory
-echo "Creating Linux runtime directory..."
+echo "Creating Linux runtime directory..."S
 mkdir -p "$LINUX_DIR"
 
 # Copy the primary shared library (prefer GNU x64 if available, fallback to musl)
@@ -50,9 +50,9 @@ echo "Copying libturso_csharp.so to runtime directory..."
 if [ -f "$BINDINGS_DIR/target/x86_64-unknown-linux-gnu/release/libturso_csharp.so" ]; then
     echo "Using GNU x64 build"
     cp "$BINDINGS_DIR/target/x86_64-unknown-linux-gnu/release/libturso_csharp.so" "$LINUX_DIR/libturso_csharp.so"
-elif [ -f "$BINDINGS_DIR/target/x86_64-unknown-linux-musl/release/libturso_csharp.so" ]; then
-    echo "Using musl x64 build"
-    cp "$BINDINGS_DIR/target/x86_64-unknown-linux-musl/release/libturso_csharp.so" "$LINUX_DIR/libturso_csharp.so"
+# elif [ -f "$BINDINGS_DIR/target/x86_64-unknown-linux-musl/release/libturso_csharp.so" ]; then
+#     echo "Using musl x64 build"
+#     cp "$BINDINGS_DIR/target/x86_64-unknown-linux-musl/release/libturso_csharp.so" "$LINUX_DIR/libturso_csharp.so"
 else
     echo "❌ No Linux shared library found"
     exit 1

@@ -7,7 +7,7 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ProjectRoot = Split-Path -Parent $ScriptDir
 $BindingsDir = Join-Path $ProjectRoot "bindings"
 $RuntimeDir = Join-Path $ProjectRoot "runtime"
-$WindowsDir = Join-Path $RuntimeDir "windows"
+$WindowsDir = Join-Path $RuntimeDir "windows-x64"
 
 Write-Host "Building turso_csharp DLL for Windows platforms..." -ForegroundColor Green
 Write-Host "Project root: $ProjectRoot"

@@ -38,70 +38,70 @@ jobs:
         retention-days: 1
   
   # Build native libraries for Windows
-  build-windows:
-    runs-on: windows-latest
+#   build-windows:
+#     runs-on: windows-latest
     
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: recursive
+#     steps:
+#     - uses: actions/checkout@v4
+#       with:
+#         submodules: recursive
     
-    - name: Setup Rust
-      uses: dtolnay/rust-toolchain@stable
-      with:
-        toolchain: stable
+#     - name: Setup Rust
+#       uses: dtolnay/rust-toolchain@stable
+#       with:
+#         toolchain: stable
     
-    - name: Build Windows native libraries
-      run: |
-        pwsh scripts/build-windows.ps1
+#     - name: Build Windows native libraries
+#       run: |
+#         pwsh scripts/build-windows.ps1
     
-    - name: Upload Windows artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: windows-natives
-        path: runtime/windows-x64/
-        retention-days: 1
+#     - name: Upload Windows artifacts
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: windows-natives
+#         path: runtime/windows-x64/
+#         retention-days: 1
   
   # Build native libraries for macOS (both dylib and XCFramework)
-  build-macos:
-    runs-on: macos-latest
+#   build-macos:
+#     runs-on: macos-latest
     
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: recursive
+#     steps:
+#     - uses: actions/checkout@v4
+#       with:
+#         submodules: recursive
     
-    - name: Setup Rust
-      uses: dtolnay/rust-toolchain@stable
-      with:
-        toolchain: stable
+#     - name: Setup Rust
+#       uses: dtolnay/rust-toolchain@stable
+#       with:
+#         toolchain: stable
     
-    - name: Install nightly toolchain for iOS targets
-      run: rustup toolchain install nightly
+#     - name: Install nightly toolchain for iOS targets
+#       run: rustup toolchain install nightly
     
-    - name: Build macOS dylib
-      run: |
-        chmod +x scripts/build-macos.sh
-        scripts/build-macos.sh
+#     - name: Build macOS dylib
+#       run: |
+#         chmod +x scripts/build-macos.sh
+#         scripts/build-macos.sh
     
-    - name: Build XCFramework
-      run: |
-        chmod +x scripts/build-xcframework.sh
-        scripts/build-xcframework.sh
+#     - name: Build XCFramework
+#       run: |
+#         chmod +x scripts/build-xcframework.sh
+#         scripts/build-xcframework.sh
     
-    - name: Upload macOS dylib artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: macos-natives
-        path: runtime/macos/
-        retention-days: 1
+#     - name: Upload macOS dylib artifacts
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: macos-natives
+#         path: runtime/macos/
+#         retention-days: 1
     
-    - name: Upload XCFramework artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: xcframework-natives
-        path: runtime/Frameworks/
-        retention-days: 1
+#     - name: Upload XCFramework artifacts
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: xcframework-natives
+#         path: runtime/Frameworks/
+#         retention-days: 1
   
   # Build native libraries for Android
   build-android:
@@ -123,8 +123,11 @@ jobs:
         ndk-version: r26c
         add-to-path: false
     
-    - name: Install cargo-ndk
-      run: cargo install cargo-ndk
+    - name: Install cargo-ndk and Android targets
+      run: |
+        cargo install cargo-ndk
+        rustup target add x86_64-linux-android
+        rustup target add aarch64-linux-android
     
     - name: Build Android native libraries
       run: |
@@ -143,27 +146,27 @@ jobs:
         retention-days: 1
   
   # Build native libraries for WASM
-  build-wasm:
-    runs-on: ubuntu-latest
+#   build-wasm:
+#     runs-on: ubuntu-latest
     
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: recursive
+#     steps:
+#     - uses: actions/checkout@v4
+#       with:
+#         submodules: recursive
     
-    - name: Setup Rust
-      uses: dtolnay/rust-toolchain@stable
-      with:
-        toolchain: stable
+#     - name: Setup Rust
+#       uses: dtolnay/rust-toolchain@stable
+#       with:
+#         toolchain: stable
     
-    - name: Build WASM native libraries
-      run: |
-        chmod +x scripts/build-wasm.sh
-        scripts/build-wasm.sh
+#     - name: Build WASM native libraries
+#       run: |
+#         chmod +x scripts/build-wasm.sh
+#         scripts/build-wasm.sh
     
-    - name: Upload WASM artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: wasm-natives
-        path: runtime/browser-wasm/
-        retention-days: 1
+#     - name: Upload WASM artifacts
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: wasm-natives
+#         path: runtime/browser-wasm/
+#         retention-days: 1

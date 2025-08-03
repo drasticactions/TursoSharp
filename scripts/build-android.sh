@@ -17,6 +17,11 @@ if ! command -v cargo-ndk >/dev/null 2>&1; then
     cargo install cargo-ndk
 fi
 
+# Install required Android Rust targets
+echo "Installing Android Rust targets..."
+rustup target add x86_64-linux-android
+rustup target add aarch64-linux-android
+
 # Ensure we're in the bindings directory
 cd "$BINDINGS_DIR"
 
