@@ -29,6 +29,9 @@ jobs:
       run: |
         chmod +x scripts/build-linux.sh
         scripts/build-linux.sh
+
+    - name: Restore workloads
+      run: dotnet workload restore src/TursoSharp/TursoSharp.csproj
     
     - name: Restore dependencies
       run: dotnet restore src/TursoSharp.slnx
