@@ -1,0 +1,22 @@
+[package]
+name = "turso-csharp"
+version = "0.1.3"
+edition = "2021"
+
+[lib]
+name = "turso_csharp"
+crate-type = ["cdylib"]
+
+[features]
+default = ["io_uring"]
+io_uring = ["turso_core/io_uring"]
+experimental_indexes = []
+
+[dependencies]
+turso_core = "0.1.3"
+anyhow = "1.0.98"
+thiserror = "1.0"
+tokio = { version = "1.0", features = ["rt", "rt-multi-thread"] }
+
+[build-dependencies]
+csbindgen = "1.9"
