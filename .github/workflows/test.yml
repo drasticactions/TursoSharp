@@ -31,7 +31,7 @@ jobs:
         scripts/build-linux.sh
 
     - name: Restore workloads
-      run: dotnet workload restore src/TursoSharp/TursoSharp.csproj
+      run: dotnet workload install wasm-tools
     
     - name: Restore dependencies
       run: dotnet restore src/TursoSharp.slnx
