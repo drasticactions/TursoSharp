@@ -1,7 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net9.0;net9.0-ios;net9.0-maccatalyst;net9.0-macos</TargetFrameworks>
+    <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Linux'))">LINUX</DefineConstants>
+    <IsLinux>$([MSBuild]::IsOSPlatform('Linux'))</IsLinux>
+    <TargetFrameworks Condition="$(IsLinux) == false">net9.0;net9.0-ios;net9.0-maccatalyst;net9.0-macos</TargetFrameworks>
+    <TargetFrameworks Condition="$(IsLinux) == true">net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
