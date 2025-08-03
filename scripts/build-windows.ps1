@@ -21,9 +21,9 @@ cargo clean
 
 # Define Windows targets
 $Targets = @(
-    "x86_64-pc-windows-gnu",
-    "x86_64-pc-windows-msvc",
-    "aarch64-pc-windows-msvc"
+    # "x86_64-pc-windows-gnu",
+    "x86_64-pc-windows-msvc"
+    # "aarch64-pc-windows-msvc"
 )
 
 # Install all required targets
@@ -50,17 +50,17 @@ if (-not (Test-Path $WindowsDir)) {
 Write-Host "Copying turso_csharp.dll to runtime directory..." -ForegroundColor Yellow
 
 $MsvcDll = Join-Path $BindingsDir "target\x86_64-pc-windows-msvc\release\turso_csharp.dll"
-$GnuDll = Join-Path $BindingsDir "target\x86_64-pc-windows-gnu\release\turso_csharp.dll"
+# $GnuDll = Join-Path $BindingsDir "target\x86_64-pc-windows-gnu\release\turso_csharp.dll"
 $DestinationDll = Join-Path $WindowsDir "turso_csharp.dll"
 
 if (Test-Path $MsvcDll) {
     Write-Host "Using MSVC x64 build"
     Copy-Item $MsvcDll $DestinationDll -Force
 }
-elseif (Test-Path $GnuDll) {
-    Write-Host "Using GNU x64 build"
-    Copy-Item $GnuDll $DestinationDll -Force
-}
+# elseif (Test-Path $GnuDll) {
+#     Write-Host "Using GNU x64 build"
+#     Copy-Item $GnuDll $DestinationDll -Force
+# }
 else {
     Write-Host "❌ No Windows DLL found" -ForegroundColor Red
     exit 1
