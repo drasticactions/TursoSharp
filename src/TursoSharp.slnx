@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="TursoSharp.Tests/TursoSharp.Tests.csproj" />
+  <Project Path="TursoSharp/TursoSharp.csproj" />
+  <Project Path="TursoSharp.Generators/TursoSharp.Generators.csproj" />
+</Solution>

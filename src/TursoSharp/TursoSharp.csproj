@@ -1,0 +1,81 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net9.0;net9.0-ios;net9.0-maccatalyst;net9.0-macos</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <IsAotCompatible>true</IsAotCompatible>
+    <PublishAot>true</PublishAot>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>TursoSharp.snk</AssemblyOriginatorKeyFile>
+    <PackageId>TursoSharp</PackageId>
+    <Version>0.1.3-preview</Version>
+    <Authors>drasticactions</Authors>
+    <Description>TursoSharp - C# bindings for Turso Database</Description>
+    <PackageProjectUrl>https://github.com/drasticactions/TursoSharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/drasticactions/TursoSharp</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>database;sqlite;rust;turso;sql;source-generator;orm</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\runtime\TursoSharp.targets" Pack="true" PackagePath="build\TursoSharp.targets" />
+    <None Include="..\..\runtime\TursoSharpWasm.targets" Pack="true" PackagePath="build\TursoSharpWasm.targets" />
+    <None Include="..\..\runtime\windows-x64\turso_csharp.dll" Pack="true" PackagePath="build\windows-x64\turso_csharp.dll" Condition="Exists('..\..\runtime\windows-x64\turso_csharp.dll')" />
+    <None Include="..\..\runtime\macos\libturso_csharp.dylib" Pack="true" PackagePath="build\macos\libturso_csharp.dylib" Condition="Exists('..\..\runtime\macos\libturso_csharp.dylib')" />
+    <None Include="..\..\runtime\linux-x64\libturso_csharp.so" Pack="true" PackagePath="build\linux-x64\libturso_csharp.so" Condition="Exists('..\..\runtime\linux-x64\libturso_csharp.so')" />
+    <None Include="..\..\runtime\android-x86_64\libturso_csharp.so" Pack="true" PackagePath="build\android-x86_64\libturso_csharp.so" Condition="Exists('..\..\runtime\android-x86_64\libturso_csharp.so')" />
+    <None Include="..\..\runtime\android-arm64-v8a\libturso_csharp.so" Pack="true" PackagePath="build\android-arm64-v8a\libturso_csharp.so" Condition="Exists('..\..\runtime\android-arm64-v8a\libturso_csharp.so')" />
+    <None Include="..\..\runtime\Frameworks\libturso_csharp.xcframework\**\*" Pack="true" PackagePath="build\Frameworks\libturso_csharp.xcframework\%(RecursiveDir)%(Filename)%(Extension)" Condition="Exists('..\..\runtime\Frameworks\libturso_csharp.xcframework\Info.plist')" />
+    <None Include="..\..\runtime\browser-wasm\turso_csharp.a" Pack="true" PackagePath="build\browser-wasm\turso_csharp.a" Condition="Exists('..\..\runtime\browser-wasm\turso_csharp.a')" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../TursoSharp.Generators/bin/$(Configuration)/netstandard2.0/TursoSharp.Generators.dll" 
+          Pack="true" 
+          PackagePath="analyzers/dotnet/cs/TursoSharp.Generators.dll" 
+          Visible="false" />
+  </ItemGroup>
+
+  <Target Name="BuildGeneratorsBeforePack" BeforeTargets="GenerateNuspec">
+    <MSBuild Projects="../TursoSharp.Generators/TursoSharp.Generators.csproj" 
+             Properties="Configuration=$(Configuration)" />
+  </Target>
+
+  <Target Name="ValidateNativeLibrariesBeforePack" BeforeTargets="GenerateNuspec">
+    <PropertyGroup>
+      <RuntimePath>$(MSBuildProjectDirectory)\..\..\runtime</RuntimePath>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <RequiredNativeLibraries Include="$(RuntimePath)\windows-x64\turso_csharp.dll" />
+      <RequiredNativeLibraries Include="$(RuntimePath)\macos\libturso_csharp.dylib" />
+      <RequiredNativeLibraries Include="$(RuntimePath)\linux-x64\libturso_csharp.so" />
+      <RequiredNativeLibraries Include="$(RuntimePath)\android-x86_64\libturso_csharp.so" />
+      <RequiredNativeLibraries Include="$(RuntimePath)\android-arm64-v8a\libturso_csharp.so" />
+      <RequiredNativeLibraries Include="$(RuntimePath)\Frameworks\libturso_csharp.xcframework\Info.plist" />
+    </ItemGroup>
+    
+    <PropertyGroup>
+      <MissingLibraries></MissingLibraries>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <MissingNativeLibraries Include="@(RequiredNativeLibraries)" Condition="!Exists('%(Identity)')" />
+    </ItemGroup>
+    
+    <Error Condition="'@(MissingNativeLibraries)' != ''" 
+           Text="Native libraries are missing and must be built first. Missing files: @(MissingNativeLibraries, ', '). Please run the CI build process to generate native libraries before packaging." />
+    
+    <Message Importance="high" Text="All required native libraries found in runtime folder" />
+  </Target>
+
+</Project>

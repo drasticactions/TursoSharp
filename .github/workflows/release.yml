@@ -1,8 +1,8 @@
 name: Release
 
 on:
-  push:
-    branches: [ main ] 
+#   push:
+#     branches: [ main ] 
   workflow_dispatch:
     inputs:
       version:
@@ -11,7 +11,7 @@ on:
         type: string
 
 jobs:
-  # Build native libraries for Linux
+# Build native libraries for Linux
   build-linux:
     runs-on: ubuntu-latest
     
@@ -37,73 +37,73 @@ jobs:
         path: runtime/linux-x64/
         retention-days: 1
   
-  # Build native libraries for Windows
-#   build-windows:
-#     runs-on: windows-latest
+# Build native libraries for Windows
+  build-windows:
+    runs-on: windows-latest
     
-#     steps:
-#     - uses: actions/checkout@v4
-#       with:
-#         submodules: recursive
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
     
-#     - name: Setup Rust
-#       uses: dtolnay/rust-toolchain@stable
-#       with:
-#         toolchain: stable
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
     
-#     - name: Build Windows native libraries
-#       run: |
-#         pwsh scripts/build-windows.ps1
+    - name: Build Windows native libraries
+      run: |
+        pwsh scripts/build-windows.ps1
     
-#     - name: Upload Windows artifacts
-#       uses: actions/upload-artifact@v4
-#       with:
-#         name: windows-natives
-#         path: runtime/windows-x64/
-#         retention-days: 1
+    - name: Upload Windows artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-natives
+        path: runtime/windows-x64/
+        retention-days: 1
   
-  # Build native libraries for macOS (both dylib and XCFramework)
-#   build-macos:
-#     runs-on: macos-latest
+# Build native libraries for macOS (both dylib and XCFramework)
+  build-macos:
+    runs-on: macos-latest
     
-#     steps:
-#     - uses: actions/checkout@v4
-#       with:
-#         submodules: recursive
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
     
-#     - name: Setup Rust
-#       uses: dtolnay/rust-toolchain@stable
-#       with:
-#         toolchain: stable
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
     
-#     - name: Install nightly toolchain for iOS targets
-#       run: rustup toolchain install nightly
+    - name: Install nightly toolchain for iOS targets
+      run: rustup toolchain install nightly
     
-#     - name: Build macOS dylib
-#       run: |
-#         chmod +x scripts/build-macos.sh
-#         scripts/build-macos.sh
+    - name: Build macOS dylib
+      run: |
+        chmod +x scripts/build-macos.sh
+        scripts/build-macos.sh
     
-#     - name: Build XCFramework
-#       run: |
-#         chmod +x scripts/build-xcframework.sh
-#         scripts/build-xcframework.sh
+    - name: Build XCFramework
+      run: |
+        chmod +x scripts/build-xcframework.sh
+        scripts/build-xcframework.sh
     
-#     - name: Upload macOS dylib artifacts
-#       uses: actions/upload-artifact@v4
-#       with:
-#         name: macos-natives
-#         path: runtime/macos/
-#         retention-days: 1
+    - name: Upload macOS dylib artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-natives
+        path: runtime/macos/
+        retention-days: 1
     
-#     - name: Upload XCFramework artifacts
-#       uses: actions/upload-artifact@v4
-#       with:
-#         name: xcframework-natives
-#         path: runtime/Frameworks/
-#         retention-days: 1
+    - name: Upload XCFramework artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: xcframework-natives
+        path: runtime/Frameworks/
+        retention-days: 1
   
-  # Build native libraries for Android
+# Build native libraries for Android
   build-android:
     runs-on: ubuntu-latest
     
@@ -145,28 +145,94 @@ jobs:
           runtime/android-arm64-v8a/
         retention-days: 1
   
-  # Build native libraries for WASM
-#   build-wasm:
-#     runs-on: ubuntu-latest
+# Build native libraries for WASM
+  build-wasm:
+    runs-on: ubuntu-latest
     
-#     steps:
-#     - uses: actions/checkout@v4
-#       with:
-#         submodules: recursive
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
     
-#     - name: Setup Rust
-#       uses: dtolnay/rust-toolchain@stable
-#       with:
-#         toolchain: stable
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
     
-#     - name: Build WASM native libraries
-#       run: |
-#         chmod +x scripts/build-wasm.sh
-#         scripts/build-wasm.sh
+    - name: Build WASM native libraries
+      run: |
+        chmod +x scripts/build-wasm.sh
+        scripts/build-wasm.sh
     
-#     - name: Upload WASM artifacts
-#       uses: actions/upload-artifact@v4
-#       with:
-#         name: wasm-natives
-#         path: runtime/browser-wasm/
-#         retention-days: 1
+    - name: Upload WASM artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: wasm-natives
+        path: runtime/browser-wasm/
+        retention-days: 1
+
+# Package NuGet with all native libraries
+  package:
+    needs: [build-linux, build-windows, build-macos, build-android, build-wasm]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        global-json-file: global.json
+    
+    - name: Download all native library artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+    
+    - name: Restore native libraries to runtime folder
+      run: |
+        # Copy all native libraries back to runtime folder
+        cp -r artifacts/linux-natives/* runtime/linux-x64/ || true
+        cp -r artifacts/windows-natives/* runtime/windows-x64/ || true
+        cp -r artifacts/macos-natives/* runtime/macos/ || true
+        cp -r artifacts/xcframework-natives/* runtime/Frameworks/ || true
+        cp -r artifacts/android-natives/* runtime/ || true
+        cp -r artifacts/wasm-natives/* runtime/browser-wasm/ || true
+        
+        # List what we have
+        echo "Runtime folder contents:"
+        find runtime -type f -name "*.so" -o -name "*.dll" -o -name "*.dylib" -o -name "*.a" | sort
+    
+    - name: Update version in project files
+      run: |
+        # Update TursoSharp.csproj version
+        sed -i "s/<Version>.*<\/Version>/<Version>${{ inputs.version }}<\/Version>/" src/TursoSharp/TursoSharp.csproj
+        
+        # Update XCFramework Info.plist version in build script (for future builds)
+        # sed -i "s/CFBundleShortVersionString.*>.*<\/string>/CFBundleShortVersionString><string>${{ inputs.version }}<\/string>/" scripts/build-xcframework.sh
+        # sed -i "s/CFBundleVersion.*>.*<\/string>/CFBundleVersion><string>${{ inputs.version }}<\/string>/" scripts/build-xcframework.sh
+    
+    - name: Build solution
+      run: dotnet build src/TursoSharp.slnx --configuration Release
+    
+    - name: Create NuGet package
+      run: dotnet pack src/TursoSharp/TursoSharp.csproj --configuration Release --no-build
+    
+    - name: Upload NuGet package
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-package
+        path: src/TursoSharp/bin/Release/*.nupkg
+    
+    # - name: Create GitHub Release
+    #   uses: softprops/action-gh-release@v2
+    #   with:
+    #     tag_name: v${{ inputs.version }}
+    #     name: Release v${{ inputs.version }}
+    #     draft: true
+    #     files: |
+    #       src/TursoSharp/bin/Release/*.nupkg
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

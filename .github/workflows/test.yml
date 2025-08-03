@@ -1,0 +1,47 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        global-json-file: global.json
+    
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
+    
+    - name: Build native libraries
+      run: |
+        chmod +x scripts/build-linux.sh
+        scripts/build-linux.sh
+    
+    - name: Restore dependencies
+      run: dotnet restore src/TursoSharp.slnx
+    
+    - name: Build
+      run: dotnet build src/TursoSharp.slnx --no-restore --configuration Release
+    
+    - name: Run tests
+      run: dotnet test src/TursoSharp.Tests/TursoSharp.Tests.csproj --no-build --configuration Release --verbosity normal --logger trx --results-directory TestResults
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results-linux
+        path: TestResults/*.trx
