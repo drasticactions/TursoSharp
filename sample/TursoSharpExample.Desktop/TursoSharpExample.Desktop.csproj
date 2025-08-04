@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\runtime\TursoSharp.targets" />
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
+    <UseTursoNativeLibraries>true</UseTursoNativeLibraries>
     <!--If you are willing to use Windows/MacOS native APIs you will need to create 3 projects.
     One for Windows with net9.0-windows TFM, one for MacOS with net9.0-macos and one with net9.0 TFM for Linux.-->
     <TargetFramework>net9.0</TargetFramework>
@@ -25,4 +25,6 @@
   <ItemGroup>
     <ProjectReference Include="..\TursoSharpExample\TursoSharpExample.csproj" />
   </ItemGroup>
+
+  <Import Project="..\..\runtime\TursoSharp.targets" />
 </Project>

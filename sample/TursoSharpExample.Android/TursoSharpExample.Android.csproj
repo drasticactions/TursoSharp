@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\runtime\TursoSharp.targets" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <UseTursoNativeLibraries>true</UseTursoNativeLibraries>
     <TargetFramework>net9.0-android</TargetFramework>
     <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
     <Nullable>enable</Nullable>
@@ -26,4 +26,5 @@
   <ItemGroup>
     <ProjectReference Include="..\TursoSharpExample\TursoSharpExample.csproj" />
   </ItemGroup>
+  <Import Project="..\..\runtime\TursoSharp.targets" />
 </Project>
