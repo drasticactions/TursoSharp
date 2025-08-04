@@ -31,13 +31,12 @@
 
   <ItemGroup>
     <None Include="..\..\runtime\TursoSharp.targets" Pack="true" PackagePath="build\TursoSharp.targets" />
-    <None Include="..\..\runtime\TursoSharpWasm.targets" Pack="true" PackagePath="build\TursoSharpWasm.targets" />
     <None Include="..\..\runtime\windows-x64\turso_csharp.dll" Pack="true" PackagePath="build\windows-x64\turso_csharp.dll" Condition="Exists('..\..\runtime\windows-x64\turso_csharp.dll')" />
     <None Include="..\..\runtime\macos\libturso_csharp.dylib" Pack="true" PackagePath="build\macos\libturso_csharp.dylib" Condition="Exists('..\..\runtime\macos\libturso_csharp.dylib')" />
     <None Include="..\..\runtime\linux-x64\libturso_csharp.so" Pack="true" PackagePath="build\linux-x64\libturso_csharp.so" Condition="Exists('..\..\runtime\linux-x64\libturso_csharp.so')" />
     <None Include="..\..\runtime\android-x86_64\libturso_csharp.so" Pack="true" PackagePath="build\android-x86_64\libturso_csharp.so" Condition="Exists('..\..\runtime\android-x86_64\libturso_csharp.so')" />
     <None Include="..\..\runtime\android-arm64-v8a\libturso_csharp.so" Pack="true" PackagePath="build\android-arm64-v8a\libturso_csharp.so" Condition="Exists('..\..\runtime\android-arm64-v8a\libturso_csharp.so')" />
-    <None Include="..\..\runtime\Frameworks\libturso_csharp.xcframework\**\*" Pack="true" PackagePath="build\Frameworks\libturso_csharp.xcframework\%(RecursiveDir)%(Filename)%(Extension)" Condition="Exists('..\..\runtime\Frameworks\libturso_csharp.xcframework\Info.plist')" />
+    <None Include="..\..\runtime\Frameworks\libturso_csharp.xcframework\**" Pack="true" PackagePath="build\Frameworks\libturso_csharp.xcframework" Condition="Exists('..\..\runtime\Frameworks\libturso_csharp.xcframework\Info.plist')" />
     <None Include="..\..\runtime\browser-wasm\turso_csharp.a" Pack="true" PackagePath="build\browser-wasm\turso_csharp.a" Condition="Exists('..\..\runtime\browser-wasm\turso_csharp.a')" />
   </ItemGroup>
 

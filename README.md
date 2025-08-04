@@ -27,7 +27,7 @@ The package comes baked in with native runtime libraries and targets for:
 - Linux (x64)
 - WASM (This will only work with the in-memory functions. If anyone knows if it's possible to do File IO in the Rust code please file a PR!)
 
-You can disable these build in runtimes by setting `UseTursoNativeLibraries` to false as a build parameter.
+For the native runtimes to be installed, you need to reference TursoSharp in both your application and class libraries. This could probably be fixed by hacking the targets file, or not bothering and using the native nuget folders instead, but I'm not sure how that would work for the XCFrameworks... If anyone has better ideas feel free to file a PR.
 
 ### Todo App
 

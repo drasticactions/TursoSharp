@@ -1,8 +1,8 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <!-- Property to control whether to use bundled native libraries (default: true) -->
-        <UseTursoNativeLibraries Condition="'$(UseTursoNativeLibraries)' == ''">true</UseTursoNativeLibraries>
-        
+        <UseTursoNativeLibraries Condition="'$(UseTursoNativeLibraries)' == '' AND '$(OutputType)' != 'Library'">true</UseTursoNativeLibraries>
+
         <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Windows'))">WINDOWS</DefineConstants>
         <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Linux'))">LINUX</DefineConstants>
         <DefineConstants Condition="$([MSBuild]::IsOSPlatform('OSX'))">MACOS</DefineConstants>
@@ -89,5 +89,15 @@
             <Link>lib\armv8\libturso_csharp.so</Link>
             <Abi>arm64-v8a</Abi>
         </AndroidNativeLibrary>
+    </ItemGroup>
+    
+    <ItemGroup Condition="'$(WasmBuildNative)' == 'true' AND '$(UseTursoNativeLibraries)' == 'true'">
+        <None Visible="false" Include="$(MSBuildThisFileDirectory)browser-wasm/turso_csharp.a">
+            <Pack>true</Pack>
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <TargetPath>browser-wasm/turso_csharp.a</TargetPath>
+        </None>
+        <NativeFileReference Include="$(MSBuildThisFileDirectory)browser-wasm/turso_csharp.a" />
     </ItemGroup>
 </Project>
