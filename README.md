@@ -31,7 +31,7 @@ For the native runtimes to be installed, you need to reference TursoSharp in bot
 
 ### Todo App
 
-The `samples` directory contains a Todo sample app, written with [Avalonia](https://avaloniaui.net/). This supports iOS, Android, and the Desktop. 
+The `samples` directory contains a Todo sample app, written with [Avalonia](https://avaloniaui.net/). This supports iOS, Android, Web, and the Desktop. 
 
 ### TL;DR
 
