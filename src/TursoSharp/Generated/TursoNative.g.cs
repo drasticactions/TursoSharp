@@ -21,6 +21,8 @@ namespace Turso.Native
 
 
 
+
+
         [DllImport(__DllName, EntryPoint = "turso_database_open_memory", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         internal static extern void* turso_database_open_memory();
 
