@@ -1,0 +1,3 @@
+[submodule "external/turso"]
+	path = external/turso
+	url = https://github.com/tursodatabase/turso.git

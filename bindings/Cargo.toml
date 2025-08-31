@@ -1,6 +1,6 @@
 [package]
 name = "turso-csharp"
-version = "0.1.4"
+version = "0.1.5-pre.1"
 edition = "2021"
 
 [lib]
@@ -13,7 +13,7 @@ io_uring = ["turso_core/io_uring"]
 experimental_indexes = []
 
 [dependencies]
-turso_core = "0.1.4"
+turso_core = { path = "../external/turso/core", features = ["io_uring"] }
 anyhow = "1.0.98"
 thiserror = "1.0"
 tokio = { version = "1.0", features = ["rt", "rt-multi-thread"] }

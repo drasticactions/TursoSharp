@@ -15,7 +15,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>TursoSharp.snk</AssemblyOriginatorKeyFile>
     <PackageId>TursoSharp</PackageId>
-    <Version>0.1.4-preview</Version>
+    <Version>0.1.5-preview</Version>
     <Authors>drasticactions</Authors>
     <Description>TursoSharp - C# bindings for Turso Database</Description>
     <PackageProjectUrl>https://github.com/drasticactions/TursoSharp</PackageProjectUrl>

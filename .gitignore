@@ -8,7 +8,6 @@
 runtime/*/*
 bindings/build/
 Cargo.lock
-external/
 packages/
 
 # User-specific files
